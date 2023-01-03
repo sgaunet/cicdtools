@@ -1,0 +1,17 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+  IMG: sgaunet/cicdtools:latest
+
+tasks:
+  default:
+    cmds:
+      - docker build . -t {{.IMG}}
+    # silent: true
+
+  push:
+    deps:
+    - default
+    cmds:
+      - docker push {{.IMG}}
