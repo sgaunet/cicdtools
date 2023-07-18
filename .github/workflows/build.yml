@@ -1,0 +1,53 @@
+name: publish docker image
+on: 
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+env:
+  DOCKERIMG: sgaunet/cicdtools
+
+jobs:
+  publish-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --prune --unshallow
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build/Push image ghcr.io/${DOCKERIMG}:latest
+        shell: /usr/bin/bash {0}
+        run: |
+          docker build . -t ghcr.io/${DOCKERIMG}:latest
+          docker push       ghcr.io/${DOCKERIMG}:latest
+          # get tags of current commit
+          tag=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
+          if [ ! -z "$tag" ]; then
+            echo "Tag name from git describe: $tag"
+            docker tag  ghcr.io/${DOCKERIMG}:latest ghcr.io/${DOCKERIMG}:$tag
+            docker push ghcr.io/${DOCKERIMG}:$tag
+          fi
+      - name: Login to Docker Container Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Tag and Push image to docker registry
+        shell: /usr/bin/bash {0}
+        run: |
+            docker tag ghcr.io/${DOCKERIMG}:latest ${DOCKERIMG}:latest
+            docker push       ${DOCKERIMG}:latest
+            # get tags of current commit
+            tag=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
+            if [ ! -z "$tag" ]; then
+              echo "Tag name from git describe: $tag"
+              docker tag  ghcr.io/${DOCKERIMG}:latest ${DOCKERIMG}:$tag
+              docker push ${DOCKERIMG}:$tag
+            fi
