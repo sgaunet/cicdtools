@@ -12,6 +12,10 @@ ENV GITLEAKS_VERSION="8.17.0"
 ENV GITLEAKS_OS="linux"
 ENV GITLEAKS_ARCH="x64"
 
+ENV OSV_SCANNER_VERSION="1.3.5"
+ENV OSV_SCANNER_OS="linux"
+ENV OSV_SCANNER_ARCH="amd64"
+
 
 RUN apk add curl wget
 
@@ -33,3 +37,9 @@ RUN wget -q https://github.com/zricethezav/gitleaks/releases/download/v${GITLEAK
         rm gitleaks_${GITLEAKS_VERSION}_${GITLEAKS_OS}_${GITLEAKS_ARCH}.tar.gz && \
         mv gitleaks /usr/bin/gitleaks && \
         chmod +x /usr/bin/gitleaks
+
+# Install osv-scanner
+RUN echo https://github.com/google/osv-scanner/releases/download/v${OSV_SCANNER_VERSION}/osv-scanner_${OSV_SCANNER_VERSION}_${OSV_SCANNER_OS}_${OSV_SCANNER_ARCH}
+RUN wget -q https://github.com/google/osv-scanner/releases/download/v${OSV_SCANNER_VERSION}/osv-scanner_${OSV_SCANNER_VERSION}_${OSV_SCANNER_OS}_${OSV_SCANNER_ARCH} && \
+        mv osv-scanner_${OSV_SCANNER_VERSION}_${OSV_SCANNER_OS}_${OSV_SCANNER_ARCH} /usr/bin/osv-scanner && \
+        chmod +x /usr/bin/osv-scanner
