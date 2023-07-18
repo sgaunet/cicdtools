@@ -16,6 +16,10 @@ ENV OSV_SCANNER_VERSION="1.3.5"
 ENV OSV_SCANNER_OS="linux"
 ENV OSV_SCANNER_ARCH="amd64"
 
+ENV TRIVY_VERSION="0.43.1"
+ENV TRIVY_OS="Linux"
+ENV TRIVY_ARCH="64bit"
+
 
 RUN apk add curl wget
 
@@ -43,3 +47,9 @@ RUN echo https://github.com/google/osv-scanner/releases/download/v${OSV_SCANNER_
 RUN wget -q https://github.com/google/osv-scanner/releases/download/v${OSV_SCANNER_VERSION}/osv-scanner_${OSV_SCANNER_VERSION}_${OSV_SCANNER_OS}_${OSV_SCANNER_ARCH} && \
         mv osv-scanner_${OSV_SCANNER_VERSION}_${OSV_SCANNER_OS}_${OSV_SCANNER_ARCH} /usr/bin/osv-scanner && \
         chmod +x /usr/bin/osv-scanner
+
+# Install trivy
+RUN wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_${TRIVY_OS}-${TRIVY_ARCH}.tar.gz && \
+        tar zxvf trivy_${TRIVY_VERSION}_${TRIVY_OS}-${TRIVY_ARCH}.tar.gz trivy -C /usr/bin && \
+        rm trivy_${TRIVY_VERSION}_${TRIVY_OS}-${TRIVY_ARCH}.tar.gz && \
+        chmod +x /usr/bin/trivy
