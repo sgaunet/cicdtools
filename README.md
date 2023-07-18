@@ -5,6 +5,9 @@ Actually, it contains:
 
 * [trufflehog](https://github.com/trufflesecurity/trufflehog)
 * [envtemplate](https://github.com/sgaunet/envtemplate)
+* [gitleaks](https://github.com/gitleaks/gitleaks)
+* [osv-scanner](https://github.com/google/osv-scanner)
+* [trivy](https://github.com/aquasecurity/trivy)
 
 
 Example for gitlab:
